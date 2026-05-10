@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarineSentinel — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase v10 compat SDK (no bundler required) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+
+<body>
+
+  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🌊</span>
+        <h1>MarineSentinel</h1>
+      </div>
+      <div class="header-right">
+        <span class="status-pill" id="statusPill">Connecting…</span>
+        <span class="last-seen" id="lastSeen"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Alert Banner ───────────────────────────────────────────────────── -->
+    <div class="alert-banner hidden" id="alertBanner" role="alert">
+      <span class="alert-badge" id="alertType">ALERT</span>
+      <span class="alert-msg"   id="alertMessage">—</span>
+      <button class="alert-close" onclick="this.parentElement.classList.add('hidden')">✕</button>
+    </div>
+
+    <!-- ── Top Row: Detection + GPS ─────────────────────────────────────── -->
+    <div class="grid-top">
+
+      <section class="card detection-card">
+        <h2>AI Debris Detection</h2>
+        <div class="detection-main">
+          <div class="detection-label" id="detectionLabel">—</div>
+          <div class="detection-conf"  id="detectionConf">—</div>
+        </div>
+        <div class="detection-meta">
+          <div class="meta-row">
+            <span class="meta-key">GPS</span>
+            <span class="meta-val" id="gpsCoords">Acquiring fix…</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-key">Time</span>
+            <span class="meta-val" id="detectionTime">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card status-card">
+        <h2>Device Status</h2>
+        <div class="status-rows">
+          <div class="status-row">
+            <span>MCU Sensor Node</span>
+            <span class="badge badge-ok" id="bridgeStatus">Unknown</span>
+          </div>
+          <div class="status-row">
+            <span>GPS Fix</span>
+            <span class="badge" id="gpsStatus">No fix</span>
+          </div>
+          <div class="status-row">
+            <span>AI Model</span>
+            <span class="badge badge-ok">Loaded</span>
+          </div>
+          <div class="status-row">
+            <span>Camera</span>
+            <span class="badge" id="cameraStatus">No snapshot</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── Water Quality Sensors ─────────────────────────────────────────── -->
+    <section class="card">
+      <h2>Water Quality  <span class="card-sub">(primary sensors — UNO Q STM32)</span></h2>
+      <div class="sensor-grid">
+        <div class="sensor-tile" id="tile-ph">
+          <div class="sensor-label">pH</div>
+          <div class="sensor-value" id="val-ph">—</div>
+          <div class="sensor-unit">scale 0–14</div>
+          <div class="sensor-range">Safe 6.5–9.5</div>
+        </div>
+        <div class="sensor-tile" id="tile-turb">
+          <div class="sensor-label">Turbidity</div>
+          <div class="sensor-value" id="val-turb">—</div>
+          <div class="sensor-unit">ADC raw</div>
+          <div class="sensor-range">Alert &gt; 300</div>
+        </div>
+        <div class="sensor-tile" id="tile-wtemp">
+          <div class="sensor-label">Water Temp</div>
+          <div class="sensor-value" id="val-wtemp">—</div>
+          <div class="sensor-unit">°C</div>
+          <div class="sensor-range">Alert &gt; 30°C</div>
+        </div>
+        <div class="sensor-tile" id="tile-tds">
+          <div class="sensor-label">TDS</div>
+          <div class="sensor-value" id="val-tds">—</div>
+          <div class="sensor-unit">ppm</div>
+          <div class="sensor-range">Alert &gt; 500 ppm</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Remote Camera Snapshot ───────────────────────────────────────── -->
+    <section class="card">
+      <h2>Camera  <span class="card-sub">(snapshot — updated every 30 s)</span></h2>
+      <div class="camera-snapshot-box">
+        <div id="snapshotPlaceholder" class="snapshot-placeholder">
+          <p>No snapshot received yet.</p>
+        </div>
+        <img id="cameraSnapshot" alt="Latest camera snapshot"
+             style="display:none; max-width:100%; border-radius:6px;" />
+        <div class="snapshot-meta" id="snapshotMeta"></div>
+      </div>
+    </section>
+
+    <!-- ── Remote Parameter Control ──────────────────────────────────────── -->
+    <section class="card">
+      <h2>Remote Parameter Control</h2>
+      <p class="hint">
+        Changes are saved to Firebase and applied by the MPU on the next
+        threshold-sync cycle (every 60 s by default).
+      </p>
+      <div class="param-grid">
+        <label>pH Min
+          <input type="number" id="p-ph-min"    step="0.1" value="6.5" />
+        </label>
+        <label>pH Max
+          <input type="number" id="p-ph-max"    step="0.1" value="9.5" />
+        </label>
+        <label>Turbidity Max (ADC)
+          <input type="number" id="p-turb-max"  step="10"  value="300" />
+        </label>
+        <label>Water Temp Max (°C)
+          <input type="number" id="p-wtemp-max" step="0.5" value="30"  />
+        </label>
+        <label>TDS Max (ppm)
+          <input type="number" id="p-tds-max"   step="10"  value="500" />
+        </label>
+      </div>
+      <button id="saveParams">Save Parameters to Device</button>
+      <span class="save-status" id="saveStatus"></span>
+    </section>
+
+    <!-- ── Recent Alerts ──────────────────────────────────────────────────── -->
+    <section class="card">
+      <h2>Recent Alerts  <span class="card-sub">(last 10)</span></h2>
+      <ul class="alert-list" id="alertList">
+        <li class="empty">No alerts recorded yet.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>MarineSentinel — Ocean Health Monitor</span>
+    <span>AI: Edge Impulse · DB: Firebase · HW: Arduino UNO Q</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+name: MarineSentinel
+description: |
+  AI-powered marine debris detection and water quality monitoring device. Detects plastic debris via Edge Impulse image classification, reads water quality sensors (pH, turbidity, temperature, TDS) via the MCU block, and streams all data to a Firebase dashboard for remote monitoring.
+ports: []
+bricks:
+- arduino:video_object_detection:
+    model: ei-model-949141-1
+- arduino:web_ui: {}
+icon: 🌊

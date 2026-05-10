@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarineSentinel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="layout">
+
+    <!-- ── Left column: camera + detection ───────────────────────────────── -->
+    <div class="left-col">
+      <div class="header">
+        <h1>🌊 MarineSentinel</h1>
+        <span class="status-dot" id="statusDot" title="Connection status"></span>
+      </div>
+
+      <!-- Live camera feed — receives JPEG frames from the AI runner via Socket.IO -->
+      <div class="camera-box">
+        <div id="cameraPlaceholder" class="camera-placeholder">
+          <p id="cameraStatus">Connecting to camera…</p>
+        </div>
+        <img id="cameraFeed" alt="Live camera feed"
+             style="display:none; width:100%; height:100%; object-fit:contain;" />
+      </div>
+
+      <!-- Latest AI detection result -->
+      <div class="card detection-card">
+        <div class="card-label">AI Detection</div>
+        <div class="detection-row">
+          <span class="detection-label" id="detLabel">—</span>
+          <span class="detection-conf"  id="detConf">—</span>
+        </div>
+        <div class="detection-meta">
+          <span id="detGPS">GPS: no fix</span>
+          <span id="detTime">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right column: sensors + alerts ────────────────────────────────── -->
+    <div class="right-col">
+
+      <!-- Alert banner — shown when debris or sensor threshold is breached -->
+      <div class="alert-bar hidden" id="alertBar">
+        <strong id="alertType">ALERT</strong>
+        <span id="alertMsg">—</span>
+        <span class="alert-gps hidden" id="alertGPS"></span>
+      </div>
+
+      <!-- Water quality -->
+      <div class="card">
+        <div class="card-label">Water Quality</div>
+        <div class="sensor-grid">
+          <div class="tile" id="tile-ph">
+            <div class="tile-name">pH</div>
+            <div class="tile-val" id="val-ph">—</div>
+          </div>
+          <div class="tile" id="tile-turb">
+            <div class="tile-name">Turbidity</div>
+            <div class="tile-val" id="val-turb">—</div>
+          </div>
+          <div class="tile" id="tile-wtemp">
+            <div class="tile-name">Water °C</div>
+            <div class="tile-val" id="val-wtemp">—</div>
+          </div>
+          <div class="tile" id="tile-tds">
+            <div class="tile-name">TDS ppm</div>
+            <div class="tile-val" id="val-tds">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent alerts -->
+      <div class="card">
+        <div class="card-label">Recent Alerts</div>
+        <ul class="alert-list" id="alertList">
+          <li class="empty-state">No alerts yet.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="libs/socket.io.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

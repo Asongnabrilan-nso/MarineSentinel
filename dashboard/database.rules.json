@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "device": {
+      ".read":  true,
+      ".write": "auth != null"
+    },
+    "history": {
+      ".read":  "auth != null",
+      ".write": "auth != null"
+    },
+    "config": {
+      "thresholds": {
+        ".read":  true,
+        ".write": "auth != null"
+      }
+    }
+  }
+}
