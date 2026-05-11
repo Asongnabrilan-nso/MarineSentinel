@@ -1,2 +1,4 @@
 # ignore app cache folder
 .cache/
+serviceAccountKey.json
+*.json

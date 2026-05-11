@@ -1,5 +1,7 @@
 # 🌊 MarineSentinel
 
+<img src="C:\Users\Surface7\Documents\MarineSentinel\assets\images\MarineSentinel_floating.gif" alt="MarineSentinel Float on Ocean" width="400">
+
 AI-powered marine debris detection and water quality monitoring device. MarineSentinel floats on water bodies (oceans, seas, rivers) and continuously:
 
 - **Detects plastic debris** (plastic bags, plastic bottles) via an Edge Impulse image-classification model running on the MPU.
