@@ -1,6 +1,6 @@
 # 🌊 MarineSentinel
 
-![MarineSentinel Floating on Ocean](./images/Marine6.jpeg)
+![MarineSentinel Floating on Ocean](./images/MarineSentinel_floating.gif)
 
 AI-powered marine debris detection and water quality monitoring device. MarineSentinel floats on water bodies (oceans, seas, rivers) and continuously:
 
