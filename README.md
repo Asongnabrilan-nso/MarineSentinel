@@ -88,6 +88,8 @@ Firebase    ──► global dashboard         https://your-project.web.app
 
 ## Wiring Diagram
 
+![MarineSentinel](./images/Marine7.jpeg)
+
 ### UNO Q STM32 MCU Pins
 
 ```
@@ -105,6 +107,8 @@ GPS module GND      ──►  GND
 ---
 
 ## Software Setup
+
+![MarineSentinel](./images/applab1.png)
 
 ### A — UNO Q MCU Sketch (App Lab)
 
@@ -184,6 +188,8 @@ The Firebase dashboard (`dashboard/public/`) enables worldwide remote monitoring
 3. Enable **Hosting**.
 
 **Step 2 — Configure the dashboard**
+
+![MarineSentinel](./images/dashboard.png)
 
 Open `dashboard/public/app.js` and replace the `firebaseConfig` block with your real project config
 (find it at **Firebase Console → Project Settings → Your apps → SDK setup → Config**):
